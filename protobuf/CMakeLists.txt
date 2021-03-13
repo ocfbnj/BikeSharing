@@ -1,6 +1,10 @@
 include_directories(${CMAKE_SOURCE_DIR})
 
-add_library(proto ProtobufCodec.cpp ProtobufDispatcher.cpp)
+add_library(proto
+    ProtobufCodec.h
+    ProtobufDispatcher.h
+    ProtobufCodec.cpp
+    ProtobufDispatcher.cpp)
 
 protobuf_generate(
     PROTOC_OUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}

@@ -29,6 +29,7 @@ set(deps
 
 add_executable(${CMAKE_PROJECT_NAME} ${headers} ${sources})
 target_link_libraries(${CMAKE_PROJECT_NAME} ${deps})
+target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR})
 
 if (UNIX)
     target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE -Wall)

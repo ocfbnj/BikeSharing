@@ -17,13 +17,13 @@ void LoginService::registerInDispatcher(ProtobufDispatcher& dispatcher) {
 void LoginService::onMobileReq(muduo::net::TcpConnectionPtr conn,
                                MobileReqPtr message,
                                muduo::Timestamp) {
-    LOG_TRACE << "onMobileReq: ";
+    LOG_INFO << "onMobileReq: ";
     message->PrintDebugString();
 }
 
 void LoginService::onLoginReq(muduo::net::TcpConnectionPtr conn,
                               LoginReqPtr message,
                               muduo::Timestamp) {
-    LOG_TRACE << "onLoginReq";
+    LOG_INFO << "onLoginReq";
     message->PrintDebugString();
 }
