@@ -1,0 +1,93 @@
+syntax = "proto2";
+
+package BikeSharing;
+
+// Login
+
+message MobileReq {
+    required string mobile = 1;
+}
+
+message MobileRsp {
+    required int32  rspCode = 1;
+    required string vCode   = 2;
+    optional string info    = 3;
+}
+
+message LoginReq {
+    required string mobile = 1;
+    required string vCode  = 2;
+}
+
+message LoginRsp {
+    required int32  code = 1;
+    optional string info = 3;
+}
+
+//! Login
+
+// Recharge
+
+message RechargeReq {
+    required string mobile = 1;
+    required int32  amount = 2;
+}
+
+message RechargeRsp {
+    required int32  code    = 1;
+    required int32  balance = 2;
+    optional string info    = 3;
+}
+
+//! Recharge
+
+// Query
+
+message QueryBalanceReq {
+    required string mobile = 1;
+}
+
+message QueryBalanceRsp {
+    required int32  code    = 1;
+    required int32  balance = 2;
+    optional string info    = 3;
+}
+
+message QueryAccountRecordsReq {
+    required string mobile = 1;
+}
+
+message QueryAccountRecordsRsp {
+    required int32  code    = 1;
+
+    message AccountRecord {
+        required int32  type      = 1;
+        required string data      = 2;
+        required uint64 timestamp = 3;
+    }
+
+    repeated AccountRecord records = 2;
+    optional string        info    = 3;
+}
+
+message QueryTravelRecordsReq {
+    required string mobile = 1;
+}
+
+message QueryTravelRecordsRsp {
+    required int32  code    = 1;
+
+    message TravelRecord {
+        required uint64 start    = 1;
+        required uint32 duration = 2;
+        required uint32 amount   = 3;
+    }
+
+    repeated TravelRecord records   = 2;
+    required double       mileage   = 3;
+    required double       discharge = 4;
+    required double       calorie   = 5;
+    optional string       info      = 6;
+}
+
+//! Query
