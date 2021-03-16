@@ -51,14 +51,14 @@ GTEST_TEST(ProtobufCodec, MobileReqParseError) {
     ASSERT_TRUE(errorCode == ProtobufCodec::ErrorCode::ParseError);
 }
 
-void onMobileReq(muduo::net::TcpConnectionPtr,
-                 MobileReqPtr message,
+void onMobileReq(const muduo::net::TcpConnectionPtr&,
+                 const MobileReqPtr& message,
                  muduo::Timestamp) {
     std::cout << "onMobileReq: " << message->GetTypeName() << "\n";
 }
 
-void onUnknownMessageType(muduo::net::TcpConnectionPtr,
-                          MessagePtr message,
+void onUnknownMessageType(const muduo::net::TcpConnectionPtr&,
+                          const MessagePtr& message,
                           muduo::Timestamp) {
     std::cout << "onUnknownMessageType: " << message->GetTypeName() << "\n";
 }

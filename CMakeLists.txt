@@ -10,6 +10,7 @@ find_library(MUDUO_BASE muduo_base)
 find_library(MUDUO_NET muduo_net)
 
 add_subdirectory(protobuf)
+add_subdirectory(test)
 
 set(headers
     int.h

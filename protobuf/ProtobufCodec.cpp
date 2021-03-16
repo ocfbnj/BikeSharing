@@ -20,17 +20,22 @@ static int32 asInt32(const char* buf) {
     return muduo::net::sockets::networkToHost32(be32);
 }
 
-void ProtobufCodec::send(muduo::net::TcpConnectionPtr conn, const google::protobuf::Message& message) {
+ProtobufCodec::ProtobufCodec(ProtobufMessageCallback messageCb)
+    : messageCallback(std::move(messageCb)), errorCallback(&defaultErrorCallback) {}
+
+void ProtobufCodec::send(const muduo::net::TcpConnectionPtr& conn,
+                         const google::protobuf::Message& message) {
     muduo::net::Buffer buffer;
     ProtobufCodec::fillEmptyBuffer(&buffer, message);
     conn->send(&buffer);
 }
 
-void ProtobufCodec::defaultErrorCallback_(muduo::net::TcpConnectionPtr conn,
-                                          muduo::net::Buffer* buf,
-                                          muduo::Timestamp receiveTime,
-                                          ErrorCode errorCode) {
-    LOG_ERROR << "ProtobufCodec::defaultErrorCallback_ - " << errorMap[errorCode].data();
+void ProtobufCodec::defaultErrorCallback(
+    const muduo::net::TcpConnectionPtr& conn,
+    muduo::net::Buffer* buf,
+    muduo::Timestamp receiveTime,
+    ErrorCode errorCode) {
+    LOG_ERROR << "ProtobufCodec::defaultErrorCallback: " << errorMap[errorCode].data();
 
     if (conn && conn->connected()) {
         conn->shutdown();
@@ -40,17 +45,17 @@ void ProtobufCodec::defaultErrorCallback_(muduo::net::TcpConnectionPtr conn,
 void ProtobufCodec::onMessage(const muduo::net::TcpConnectionPtr& conn,
                               muduo::net::Buffer* buf,
                               muduo::Timestamp receiveTime) {
-    while (buf->readableBytes() > HeaderLen_) {
+    while (buf->readableBytes() > HeaderLen) {
         int32 len = buf->peekInt32();
-        if (buf->readableBytes() >= HeaderLen_ + len) {
+        if (buf->readableBytes() >= HeaderLen + len) {
             ErrorCode err = ErrorCode::NoError;
-            MessagePtr message = parse(buf->peek() + HeaderLen_, len, err);
+            MessagePtr message = parse(buf->peek() + HeaderLen, len, err);
 
             if (err == ErrorCode::NoError && message) {
-                messageCallback_(std::move(conn), std::move(message), std::move(receiveTime));
-                buf->retrieve(HeaderLen_ + len);
+                messageCallback(conn, message, receiveTime);
+                buf->retrieve(HeaderLen + len);
             } else {
-                errorCallback_(std::move(conn), buf, std::move(receiveTime), err);
+                errorCallback(conn, buf, receiveTime, err);
                 break;
             }
         } else {
@@ -63,13 +68,13 @@ MessagePtr ProtobufCodec::parse(const char* buf, std::size_t len, ErrorCode& err
     MessagePtr message;
 
     int32 nameLen = asInt32(buf);
-    if (nameLen >= 2 && nameLen <= len - HeaderLen_) {
-        std::string typeName{buf + HeaderLen_, static_cast<std::size_t>(nameLen - 1)};
+    if (nameLen >= 2 && nameLen <= len - HeaderLen) {
+        std::string typeName{buf + HeaderLen, static_cast<std::size_t>(nameLen - 1)};
 
         message.reset(ProtobufCodec::createMessage(typeName));
         if (message) {
-            const char* data = buf + HeaderLen_ + nameLen;
-            int32 dataLen = len - HeaderLen_ - nameLen;
+            const char* data = buf + HeaderLen + nameLen;
+            int32 dataLen = len - HeaderLen - nameLen;
 
             if (message->ParseFromArray(data, dataLen)) {
                 errorCode = ErrorCode::NoError;

@@ -1,8 +1,6 @@
 #ifndef SERVER_H
 #define SERVER_H
 
-#include <string>
-
 #include <muduo/net/TcpServer.h>
 
 #include "ProtobufCodec.h"
@@ -14,21 +12,21 @@ class Server {
 public:
     Server(muduo::net::EventLoop* loop,
            const muduo::net::InetAddress& listenAddr,
-           std::string nameArg);
+           const std::string& nameArg);
 
     void addService(Service& service);
     void start();
 
 private:
     void onConnection(const muduo::net::TcpConnectionPtr& conn);
-    void onUnknownMessageType_(muduo::net::TcpConnectionPtr conn,
-                               MessagePtr message,
-                               muduo::Timestamp);
+    void onUnknownMessageType(const muduo::net::TcpConnectionPtr& conn,
+                              const MessagePtr& message,
+                              muduo::Timestamp);
 
-    muduo::net::TcpServer s_;
+    muduo::net::TcpServer server;
 
-    ProtobufDispatcher dispatcher_;
-    ProtobufCodec codec_;
+    ProtobufDispatcher dispatcher;
+    ProtobufCodec codec;
 };
 
 #endif

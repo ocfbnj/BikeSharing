@@ -8,12 +8,16 @@
 
 class LoginService : public Service {
 public:
+    static constexpr auto vCodeSize = 6;
+
     void registerInDispatcher(ProtobufDispatcher& dispatcher);
 
-    void onMobileReq(muduo::net::TcpConnectionPtr conn, MobileReqPtr message, muduo::Timestamp);
-    void onLoginReq(muduo::net::TcpConnectionPtr conn, LoginReqPtr message, muduo::Timestamp);
-
-private:
+    void onMobileReq(const muduo::net::TcpConnectionPtr& conn,
+                     const MobileReqPtr& message,
+                     muduo::Timestamp);
+    void onLoginReq(const muduo::net::TcpConnectionPtr& conn,
+                    const LoginReqPtr& message,
+                    muduo::Timestamp);
 };
 
 #endif
