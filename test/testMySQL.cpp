@@ -20,28 +20,8 @@ int main(int argc, char* argv[]) {
     }
 
     auto res = MySQLConn::get().executeQuery("SELECT * FROM user_info");
-
-    std::cout.setf(std::ios::left, std::ios::adjustfield);
-    while (res->next()) {
-        std::cout << std::setw(10) << res->getString("id");
-        std::cout << std::setw(16) << res->getString("username");
-        std::cout << std::setw(16) << res->getString("mobile");
-        std::cout << std::setw(12) << res->getString("balance");
-        std::cout << std::setw(16) << res->getString("register_time");
-
-        std::cout.put('\n');
-    }
-
-    std::cout.put('\n');
+    std::cout << res << '\n';
 
     res = MySQLConn::get().executeQuery("SELECT * FROM user_info WHERE id BETWEEN ? AND ?", 1, 10);
-    while (res->next()) {
-        std::cout << std::setw(10) << res->getString("id");
-        std::cout << std::setw(16) << res->getString("username");
-        std::cout << std::setw(16) << res->getString("mobile");
-        std::cout << std::setw(12) << res->getString("balance");
-        std::cout << std::setw(16) << res->getString("register_time");
-
-        std::cout.put('\n');
-    }
+    std::cout << res << '\n';
 }

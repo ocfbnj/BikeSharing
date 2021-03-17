@@ -1,10 +1,12 @@
 #ifndef MYSQL_CONN_H
 #define MYSQL_CONN_H
 
+#include <iostream>
 #include <memory>
 #include <string_view>
 #include <type_traits>
 #include <utility>
+#include <vector>
 
 #include <mysql-cppconn-8/mysql/jdbc.h>
 #include <nlohmann/json_fwd.hpp>
@@ -16,6 +18,11 @@ using ConnectionPtr = std::unique_ptr<sql::Connection>;
 using StatementPtr = std::unique_ptr<sql::Statement>;
 using PreparedStatementPtr = std::unique_ptr<sql::PreparedStatement>;
 using ResultSetPtr = std::unique_ptr<sql::ResultSet>;
+using ResultSetMetaDataPtr = sql::ResultSetMetaData*;
+
+std::ostream& operator<<(std::ostream& os, const std::vector<std::string>& vec);
+
+std::ostream& operator<<(std::ostream& os, const ResultSetPtr& resPtr);
 
 class MySQLConn {
 public:
