@@ -5,11 +5,11 @@ project(BikeSharing)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED true)
 
-# ./vcpkg install protobuf
+# ./vcpkg install protobuf openssl nlohmann-json fmt
 find_package(protobuf CONFIG REQUIRED)
-
-# ./vcpkg install openssl
 find_package(OpenSSL REQUIRED)
+find_package(nlohmann_json CONFIG REQUIRED)
+find_package(fmt CONFIG REQUIRED)
 
 # From github
 # See https://github.com/chenshuo/muduo
@@ -30,12 +30,14 @@ set(headers
     int.h
     Server.h
     Service.h
-    LoginService.h)
+    LoginService.h
+    Config.h)
 
 set(sources
     main.cpp
     Server.cpp
-    LoginService.cpp)
+    LoginService.cpp
+    Config.cpp)
 
 set(deps
     ${MUDUO_BASE} 
@@ -43,6 +45,8 @@ set(deps
     ${MYSQL_STATIC}
     OpenSSL::SSL
     OpenSSL::Crypto
+    nlohmann_json::nlohmann_json
+    fmt::fmt
     proto)
 
 if(UNIX)
