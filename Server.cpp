@@ -27,6 +27,7 @@ void Server::addService(Service& service) {
 
 void Server::start() {
     server.start();
+    LOG_INFO << "Listen on: " << server.ipPort();
 }
 
 void Server::onConnection(const muduo::net::TcpConnectionPtr& conn) {
