@@ -10,7 +10,7 @@ MySQLConn& MySQLConn::get() {
 }
 
 void MySQLConn::init(const nlohmann::json& json) {
-    MySQLDriverPtr driver{sql::mysql::get_driver_instance()};
+    DriverPtr driver{sql::mysql::get_driver_instance()};
 
     std::string hostname = json["mysql.hostname"];
     std::string username = json["mysql.username"];
@@ -19,4 +19,17 @@ void MySQLConn::init(const nlohmann::json& json) {
 
     std::string schema = json["mysql.schema"];
     connection->setSchema(schema);
+}
+
+bool MySQLConn::execute(std::string_view sql) {
+    StatementPtr stmt{connection->createStatement()};
+
+    return stmt->execute(sql.data());
+}
+
+ResultSetPtr MySQLConn::executeQuery(std::string_view sql) {
+    StatementPtr stmt{connection->createStatement()};
+    ResultSetPtr res{stmt->executeQuery(sql.data())};
+
+    return res;
 }
