@@ -31,13 +31,15 @@ set(headers
     Server.h
     Service.h
     LoginService.h
-    Config.h)
+    Config.h
+    MySQLConn.h)
 
 set(sources
     main.cpp
     Server.cpp
     LoginService.cpp
-    Config.cpp)
+    Config.cpp
+    MySQLConn.cpp)
 
 set(deps
     ${MUDUO_BASE} 

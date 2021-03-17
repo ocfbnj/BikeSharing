@@ -3,6 +3,7 @@
 
 #include "Config.h"
 #include "LoginService.h"
+#include "MySQLConn.h"
 #include "Server.h"
 
 int main(int argc, char* argv[]) {
@@ -11,7 +12,13 @@ int main(int argc, char* argv[]) {
         return 0;
     }
 
-    Config::get().init(argv[1]);
+    try {
+        Config::get().init(argv[1]);
+        MySQLConn::get().init(Config::get().json());
+    } catch (const std::exception& e) {
+        std::cout << fmt::format("At initialization: {}\n", e.what());
+        return 1;
+    }
 
     muduo::net::EventLoop loop;
     muduo::net::InetAddress addr{8080};
