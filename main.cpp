@@ -1,4 +1,5 @@
 #include <fmt/format.h>
+#include <muduo/base/Logging.h>
 #include <muduo/net/EventLoop.h>
 
 #include "Config.h"
@@ -19,6 +20,8 @@ int main(int argc, char* argv[]) {
         std::cout << fmt::format("At initialization: {}\n", e.what());
         return 1;
     }
+
+    muduo::g_logLevel = muduo::Logger::DEBUG;
 
     muduo::net::EventLoop loop;
     muduo::net::InetAddress addr{8080};

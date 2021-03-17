@@ -4,6 +4,7 @@
 #include <muduo/base/Logging.h>
 
 #include "LoginService.h"
+#include "MySQLConn.h"
 #include "ProtobufCodec.h"
 #include "ProtobufDispatcher.h"
 
@@ -35,6 +36,8 @@ void LoginService::onMobileReq(const muduo::net::TcpConnectionPtr& conn,
     rsp.set_rspcode(0);
     rsp.set_vcode(vCode);
 
+    mobileVCode[message->mobile()] = vCode;
+
     ProtobufCodec::send(conn, rsp);
 }
 
@@ -43,4 +46,33 @@ void LoginService::onLoginReq(const muduo::net::TcpConnectionPtr& conn,
                               muduo::Timestamp) {
     LOG_DEBUG << "onLoginReq:\n"
               << message->DebugString();
+
+    const std::string& mobile = message->mobile();
+    auto it = mobileVCode.find(mobile);
+    if (it == mobileVCode.end()) {
+        LOG_DEBUG << "Mobile error: " << mobile;
+        conn->shutdown();
+        return;
+    }
+
+    if (message->vcode() != it->second) {
+        LOG_DEBUG << "Mobile vcode error: " << message->vcode();
+        conn->shutdown();
+        return;
+    }
+
+    // try to register this user
+    auto res = MySQLConn::get().executeQuery("SELECT id FROM user_info WHERE mobile=?", mobile);
+    if (!res->next()) {
+        LOG_DEBUG << "The user is not registered";
+        MySQLConn::get().executeQuery("CALL register_user(?, ?)", "null", mobile);
+    } else {
+        LOG_DEBUG << "This user is already registered";
+    }
+
+    BikeSharing::LoginRsp rsp;
+    rsp.set_code(200);
+    rsp.set_info("ok");
+
+    ProtobufCodec::send(conn, rsp);
 }

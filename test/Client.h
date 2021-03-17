@@ -1,6 +1,7 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
+#include <string>
 #include <string_view>
 
 #include <muduo/net/TcpClient.h>
@@ -25,11 +26,13 @@ private:
                               MessagePtr message,
                               muduo::Timestamp);
     void onMobileRsp(muduo::net::TcpConnectionPtr conn, MobileRspPtr rsp, muduo::Timestamp);
+    void onLoginRsp(muduo::net::TcpConnectionPtr conn, LoginRspPtr rsp, muduo::Timestamp);
 
     muduo::net::TcpClient client;
 
     ProtobufDispatcher dispatcher;
     ProtobufCodec codec;
+    std::string mobile;
 };
 
 #endif

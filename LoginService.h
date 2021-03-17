@@ -2,6 +2,8 @@
 #define LOGIN_SERVICE_H
 
 #include <muduo/net/TcpConnection.h>
+#include <string>
+#include <unordered_map>
 
 #include "Messages.h"
 #include "Service.h"
@@ -18,6 +20,9 @@ public:
     void onLoginReq(const muduo::net::TcpConnectionPtr& conn,
                     const LoginReqPtr& message,
                     muduo::Timestamp);
+
+private:
+    std::unordered_map<std::string, std::string> mobileVCode;
 };
 
 #endif

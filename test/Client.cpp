@@ -18,6 +18,10 @@ Client::Client(muduo::net::EventLoop* loop,
 
     dispatcher.registerMessageCallback<BikeSharing::MobileRsp>(
         std::bind(&Client::onMobileRsp, this, _1, _2, _3));
+    dispatcher.registerMessageCallback<BikeSharing::LoginRsp>(
+        std::bind(&Client::onLoginRsp, this, _1, _2, _3));
+
+    mobile = "12345678901";
 }
 
 void Client::connect() {
@@ -27,7 +31,7 @@ void Client::connect() {
 void Client::onConnection(const muduo::net::TcpConnectionPtr& conn) {
     if (conn->connected()) {
         BikeSharing::MobileReq req;
-        req.set_mobile("15170222549");
+        req.set_mobile(mobile);
 
         ProtobufCodec::send(conn, req);
     } else {
@@ -47,5 +51,16 @@ void Client::onUnknownMessageType(muduo::net::TcpConnectionPtr conn,
 
 void Client::onMobileRsp(muduo::net::TcpConnectionPtr conn, MobileRspPtr rsp, muduo::Timestamp) {
     LOG_DEBUG << "onMobileRsp():\n"
+              << rsp->DebugString();
+
+    BikeSharing::LoginReq req;
+    req.set_mobile(mobile);
+    req.set_vcode(rsp->vcode());
+
+    ProtobufCodec::send(conn, req);
+}
+
+void Client::onLoginRsp(muduo::net::TcpConnectionPtr conn, LoginRspPtr rsp, muduo::Timestamp) {
+    LOG_DEBUG << "onLoginRsp():\n"
               << rsp->DebugString();
 }
