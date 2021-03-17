@@ -1,3 +1,4 @@
+#include <cstddef>
 #include <cstdint>
 
 using uint8 = std::uint8_t;
@@ -9,3 +10,5 @@ using int8 = signed char;
 using int16 = signed short;
 using int32 = signed int;
 using int64 = signed long int;
+
+using size_t = std::size_t;
