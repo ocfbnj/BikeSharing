@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <memory>
+#include <mutex>
 #include <string_view>
 #include <type_traits>
 #include <utility>
@@ -43,6 +44,7 @@ private:
     // static void helper(PreparedStatementPtr& pStmt, size_t index, Ty&& arg);
 
     ConnectionPtr connection;
+    std::mutex mutex;
 };
 
 template <typename Ty>
@@ -64,6 +66,8 @@ void MySQLConn::fill(PreparedStatementPtr& pStmt, size_t index, Ty&& arg) {
 
 template <typename... Tys>
 ResultSetPtr MySQLConn::executeQuery(std::string_view sql, Tys&&... args) {
+    std::lock_guard<std::mutex> guard{mutex};
+
     PreparedStatementPtr pStmt{connection->prepareStatement(sql.data())};
 
     size_t index = 0;

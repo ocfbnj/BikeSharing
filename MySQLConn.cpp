@@ -68,12 +68,16 @@ MySQLConn::MySQLConn(const nlohmann::json& json) {
 }
 
 bool MySQLConn::execute(std::string_view sql) {
+    std::lock_guard<std::mutex> guard{mutex};
+
     StatementPtr stmt{connection->createStatement()};
 
     return stmt->execute(sql.data());
 }
 
 ResultSetPtr MySQLConn::executeQuery(std::string_view sql) {
+    std::lock_guard<std::mutex> guard{mutex};
+
     StatementPtr stmt{connection->createStatement()};
     ResultSetPtr res{stmt->executeQuery(sql.data())};
 
