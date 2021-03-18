@@ -2,6 +2,7 @@
 #define LOGIN_SERVICE_H
 
 #include <muduo/net/TcpConnection.h>
+#include <mutex>
 #include <string>
 #include <unordered_map>
 
@@ -25,6 +26,7 @@ public:
 private:
     MySQLConn dbConn;
     std::unordered_map<std::string, std::string> mobileVCode;
+    std::mutex mutex;
 };
 
 #endif

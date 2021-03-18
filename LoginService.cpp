@@ -35,7 +35,10 @@ void LoginService::onMobileReq(const muduo::net::TcpConnectionPtr& conn,
     rsp.set_rspcode(0);
     rsp.set_vcode(vCode);
 
-    mobileVCode[message->mobile()] = vCode;
+    {
+        std::lock_guard<std::mutex> guard{mutex};
+        mobileVCode.emplace(message->mobile(), vCode);
+    }
 
     ProtobufCodec::send(conn, rsp);
 }
