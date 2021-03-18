@@ -15,7 +15,6 @@ int main(int argc, char* argv[]) {
 
     try {
         Config::get().init(argv[1]);
-        MySQLConn::get().init(Config::get().json());
     } catch (const std::exception& e) {
         std::cout << fmt::format("At initialization: {}\n", e.what());
         return 1;

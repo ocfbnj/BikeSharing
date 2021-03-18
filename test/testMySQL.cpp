@@ -13,15 +13,16 @@ int main(int argc, char* argv[]) {
 
     try {
         Config::get().init(argv[1]);
-        MySQLConn::get().init(Config::get().json());
     } catch (const std::exception& e) {
         std::cout << fmt::format("At initialization: {}\n", e.what());
         return 1;
     }
 
-    auto res = MySQLConn::get().executeQuery("SELECT * FROM user_info");
+    MySQLConn conn;
+
+    auto res = conn.executeQuery("SELECT * FROM user_info");
     std::cout << res << '\n';
 
-    res = MySQLConn::get().executeQuery("SELECT * FROM user_info WHERE id BETWEEN ? AND ?", 1, 10);
+    res = conn.executeQuery("SELECT * FROM user_info WHERE id BETWEEN ? AND ?", 1, 10);
     std::cout << res << '\n';
 }

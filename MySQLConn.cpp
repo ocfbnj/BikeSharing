@@ -55,12 +55,7 @@ std::ostream& operator<<(std::ostream& os, const ResultSetPtr& resPtr) {
     return os;
 }
 
-MySQLConn& MySQLConn::get() {
-    static MySQLConn conn;
-    return conn;
-}
-
-void MySQLConn::init(const nlohmann::json& json) {
+MySQLConn::MySQLConn(const nlohmann::json& json) {
     DriverPtr driver{sql::mysql::get_driver_instance()};
 
     std::string hostname = json["mysql.hostname"];

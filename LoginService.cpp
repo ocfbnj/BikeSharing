@@ -4,7 +4,6 @@
 #include <muduo/base/Logging.h>
 
 #include "LoginService.h"
-#include "MySQLConn.h"
 #include "ProtobufCodec.h"
 #include "ProtobufDispatcher.h"
 
@@ -62,10 +61,10 @@ void LoginService::onLoginReq(const muduo::net::TcpConnectionPtr& conn,
     }
 
     // try to register this user
-    auto res = MySQLConn::get().executeQuery("SELECT id FROM user_info WHERE mobile=?", mobile);
+    auto res = dbConn.executeQuery("SELECT id FROM user_info WHERE mobile=?", mobile);
     if (!res->next()) {
         LOG_DEBUG << "The user is not registered";
-        MySQLConn::get().executeQuery("CALL register_user(?, ?)", "null", mobile);
+        dbConn.executeQuery("CALL register_user(?, ?)", "null", mobile);
     } else {
         LOG_DEBUG << "This user is already registered";
     }

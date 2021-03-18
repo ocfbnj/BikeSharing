@@ -11,6 +11,7 @@
 #include <mysql-cppconn-8/mysql/jdbc.h>
 #include <nlohmann/json_fwd.hpp>
 
+#include "Config.h"
 #include "int.h"
 
 using DriverPtr = sql::mysql::MySQL_Driver*;
@@ -26,8 +27,7 @@ std::ostream& operator<<(std::ostream& os, const ResultSetPtr& resPtr);
 
 class MySQLConn {
 public:
-    static MySQLConn& get();
-    void init(const nlohmann::json& json);
+    MySQLConn(const nlohmann::json& json = Config::get().json());
 
     bool execute(std::string_view sql);
     ResultSetPtr executeQuery(std::string_view sql);
@@ -35,8 +35,6 @@ public:
     ResultSetPtr executeQuery(std::string_view sql, Tys&&... args);
 
 private:
-    MySQLConn() = default;
-
     template <typename Ty>
     static void fill(PreparedStatementPtr& pStmt, size_t index, Ty&& arg);
     // template <typename Ty, typename... Tys>

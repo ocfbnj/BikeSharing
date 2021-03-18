@@ -6,6 +6,7 @@
 #include <unordered_map>
 
 #include "Messages.h"
+#include "MySQLConn.h"
 #include "Service.h"
 
 class LoginService : public Service {
@@ -22,6 +23,7 @@ public:
                     muduo::Timestamp);
 
 private:
+    MySQLConn dbConn;
     std::unordered_map<std::string, std::string> mobileVCode;
 };
 
